@@ -181,3 +181,48 @@ expression [ expression ]
 ]
 
 不管使用哪种形式的属性访问表达式，“，”和“［”前的表达式总是首先计算。如果结果是null或者undefined，表达式会抛出类型错误异常（TypeError）。虽然.identifier的写法更简单，但是这种方式只适用于要访问的属性名称是合法的标识符。如果属性名是保留字或者包含空格和标点符号，或是一个数字（对数组来说），则必须使用方括号写法。当属性名是通过运算得出的值而不是固定值的时候，也必须使用方括号。
+
+---
+# 调用表达式
+JavaScript中调用表达式来调用（执行）函数。函数名后跟随圆括号，括号内是逗号分隔的参数列表，参数可以有0个或多个。jjjo
+.small[
+```javascript
+   Wlib.baseUrl()       // Wlib.baseUrl是函数，它没有参数
+   Wlib.tips(that.hackJSLang("H5_CODE_ERR_OVER_TIMES"));
+```
+]
+
+如果函数使用return语句给出返回值，这个返回值就是整个调用表达式的值。否则，调用表达式的值就是undefined。
+如果是按属性访问函数，那这个调用称做“方法调用”，执行函数体的时候，做为属性访问方法的对象和数组就是方法体内this的指向。
+.small[
+```javascript
+    init: function () {
+        var that = this;
+        that.cacheDom();
+    },
+    cacheDom: function () {
+        var that = this;
+        that.dom = {
+            loading: $("#loading"),
+        };
+    }
+```
+]
+
+非方法调用的调用表达式使用全局对象this作为this关键字的值。但在ES5严格模式中定义的函数使用undefined作为全局对象的值，this不会指向全局对象。
+
+---
+# 对象创建表达式
+对象创建表达式创建对象并调用构造函数初始化新对象的属性。与函数调用表达式类似，只是之前多了关键字new：
+.small[
+```javascript
+    new lib("local", "");
+```]
+如果对象创建表达式不需要任何参数给构造函数，圆括号可以省略：
+
+.small[
+```javascript
+    new Date 
+```]
+当创建对象表达式的值时，首先创建新的空对象，将这个新对象当做this的值调用构造函数，它 用this来初始化新创建对象的属性。构造函数不会返回值，这个新创建并初始化后的对象就是整个对象创建表达式的值。如果构造函数显式返回一个值，它就做为对象创建表达式的值，而新创建的对象则被丢弃。
+
