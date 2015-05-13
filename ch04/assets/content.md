@@ -119,3 +119,65 @@ JavaScript会将标识符当做变量去查找它的值。如果变量名不存�
 };
 ```
 ]
+
+---
+# 函数定义表达式
+函数定义表达式定义一个JavaScript函数。表达式的值是这个新定义点函数。函数定义表达式包含关键字function，其后是一对圆括号，括号内是一个以逗号分割的标识符列表（参数名），然后再跟随一个由花括号包裹的JavaScript代码段（函数体），
+JavaScript代码段（函数体），
+.small[
+```javascript
+ U.getRndStr = function (length) {
+             var rnd = [];
+             var len = RND.length, r;
+             for (var i = 0; i < length; ++i) {
+                 r = RND.charAt(Math.floor(Math.random() * len));
+                 rnd.push(r);
+             }
+
+             return rnd.join('');
+ };
+```
+]
+函数表达式可以包含函数名。函数也可以通过函数语句来定义，而不是函数表达式。
+.small[
+```javascript
+ function tempCheck(data) {
+    for (var i = 0; i < data.length; i++) {
+        if (data[i].val().trim() == "") {
+            return false;
+         }
+        //...
+    }
+    return true;
+ }
+```
+]
+
+---
+#属性访问表达式
+属性访问表达式得到一个对象属性或者一个数组元素的值。属性访问定义了两种语法：
+expression . identifer
+expression [ expression ]
+第一种写法表达式制定对象，标识符指定需要访问的属性名。第二种写法方括号里是另外一个表达式指定要要访问的属性名或者数组元素的索引。
+.small[
+```javascript
+  for (var i = 0; i < data.length; i++) {
+     if (data[i].val().trim() == "") {
+        return false;
+     }
+  }
+
+  that.data.multiLang[key];
+
+  that.dom = {
+        loading: $("#loading"),
+         wrapper: $("body"),
+         tpl: $("#tpl")
+  };
+
+  that.dom.loading;
+
+```
+]
+
+不管使用哪种形式的属性访问表达式，“，”和“［”前的表达式总是首先计算。如果结果是null或者undefined，表达式会抛出类型错误异常（TypeError）。虽然.identifier的写法更简单，但是这种方式只适用于要访问的属性名称是合法的标识符。如果属性名是保留字或者包含空格和标点符号，或是一个数字（对数组来说），则必须使用方括号写法。当属性名是通过运算得出的值而不是固定值的时候，也必须使用方括号。
