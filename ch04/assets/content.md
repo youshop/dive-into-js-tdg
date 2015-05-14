@@ -344,3 +344,93 @@ in运算符左测是一个字符串或者可以转换为字符串的操作数，
 instanceof运算符左侧是一个对象，右侧操作数是标示对象的类。所有对象都是Object的实例，通过instanceof判断一个对象是否为一个类的实例的时候，这个判断也会包含对“父类”(Object)的检测。
 
 注意和isPrototypeOf()方法的关系。
+
+---
+逻辑表达式
+
+逻辑运算符“&&”、“||”和“!”是对操作数进行布尔算数运算，经常和关系运算符一起使用。
+
+逻辑与（&&）除了参与逻辑运算外，还有“短路”行为，经常用在代码中有条件的执行代码。如：
+.small[
+```javascript
+ callback && callback();        //只有callback转换后为true才执行callback
+ if(callback) {
+    callback();                 //作用同上
+ }
+
+ item && res.push(item);        //item值为真时执行res.push(item)
+
+ error && error(err);           //error值为真时执行error(err)
+ ```]
+
+ 逻辑或（||）的“短路”行为，在代码中更多做为有条件的赋值：
+ .small[
+ ```javascript
+     uri = uri || window.location.href;     //如果uri的值转换后不为false，将uri的值赋值给uri，否则将window.location.href的值赋值给uri
+
+     if(uri) {
+        uri = uri;
+     } else {
+        uri = window.location.href;         //作用同上
+     }
+
+    wduss = this.getRequestParam("uss") || this.localStorage.getItem("U_trackWduss") || "";
+ ```]
+---
+# 赋值表达式
+除了常规的赋值运算“=”之外，赋值运算符还可以和其他运算符连接起来，如“+=”，“-=”，“*”，“/”等。
+
+---
+# 表达式计算
+JavaScript可以解释运行由JavaScript源代码组成的字符串，并产生一个值。JavaScript通过全局函数eval()来完成这个工作：
+.small[
+```javascript
+    eval("function f() { return x + 1; }");
+```]
+jQuery源代码中使用eval()函数的示例：
+.small[
+```javascript
+    globalEval: function( data ) {
+        if ( data && jQuery.trim( data ) ) {
+            // We use execScript on Internet Explorer
+            // We use an anonymous function so that context is window
+            // rather than jQuery in Firefox
+            ( window.execScript || function( data ) {
+              window[ "eval" ].call( window, data );
+              } )( data );
+        }
+    },
+```]
+
+---
+#其他运算符
+typeof是一元运算符，操作数可以是任意类型。返回值为表示操作数类型的一个字符串。
+
+.small[
+```javascript
+ typeof undefined      // "undefined"
+ typeof null           // "object"
+ typeof []             // "object"
+ typeof new Date        // "object"
+ typeof NaN             // "number"
+```
+]
+如果要详细区分出类型如Array, Data, Object等，可使用Object.prototype.toString.call()。
+
+delete是一元操作符，用来删除对象属性或者数组元素。
+.small[
+```javascript
+    delete callbackList[data.c];        //删除callbackList对象中data.c属性
+    var x = 1;
+    var o = {x : 1, y: 2};
+    delete o.x;                         //删除属性x，返回true
+    delete x;                           //删除一个普通变量，在严格模式下抛出异常，非严格模式下返回true
+```]
+
+void是一元运算符，操作数可以是任意类型，忽略计算结果返回undefined。经常用在客户端URL中-javascript:URL，
+void可以让浏览器不必显示表达式计算结果如：
+.small[
+```html
+    <a href="javascript:void window.open();">Open</a>
+```]
+
