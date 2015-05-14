@@ -1,5 +1,6 @@
-class: center, middle, inverse
-
+layout: true
+class: center, middle, master
+---
 # 表达式和运算符 
 
 .footnote[
@@ -7,6 +8,7 @@ class: center, middle, inverse
 ]
 
 ---
+layout: false
 # 原始表达式
 JavaScript中原始表达式包含常量、直接量、关键字和变量。
 直接量是直接在程序中出现的常数值。
