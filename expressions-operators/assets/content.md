@@ -95,30 +95,17 @@ JavaScript会将标识符当做变量去查找它的值。如果变量名不存�
 .small[
 ```javascript
 {
-    init: init,
-          setItem: function (key, value, callback) {
-              sendToFrame('set', key, value, callback);
+    setItem: function (key, value, callback) {
+        sendToFrame('set', key, value, callback);
     },
-
     getItem: function (key, callback) {
-             sendToFrame('get', key, null, callback);
-    },
-
-    removeItem: function (key, callback) {
-                sendToFrame('remove', key, null, callback);
-    },
-
-    key: function (index, callback) {
-         sendToFrame('key', index, null, callback);
-    },
-
-    clear: function (callback) {
-           sendToFrame('clear',null, null, callback);
+        sendToFrame('get', key, null, callback);
     }
-};
+}
 ```
 ]
-
+注意JavaScript对象直接量和JSON格式对区别。
+> [some JavaScript is not JSON, and some JSON is not JavaScript](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON).
 ---
 # 函数定义表达式
 函数定义表达式定义一个JavaScript函数。表达式的值是这个新定义点函数。函数定义表达式包含关键字function，其后是一对圆括号，括号内是一个以逗号分割的标识符列表（参数名），然后再跟随一个由花括号包裹的JavaScript代码段（函数体），
@@ -154,9 +141,9 @@ JavaScript会将标识符当做变量去查找它的值。如果变量名不存�
 ---
 #属性访问表达式
 属性访问表达式得到一个对象属性或者一个数组元素的值。属性访问定义了两种语法：
-expression . identifer
+expression . **identifer**
 expression [ expression ]
-第一种写法表达式制定对象，标识符指定需要访问的属性名。第二种写法方括号里是另外一个表达式指定要要访问的属性名或者数组元素的索引。
+第一种写法表达式指定对象，标识符指定需要访问的属性名。第二种写法方括号里是另外一个表达式指定要要访问的属性名或者数组元素的索引。
 .small[
 ```javascript
   for (var i = 0; i < data.length; i++) {
@@ -178,22 +165,23 @@ expression [ expression ]
 ```
 ]
 
-不管使用哪种形式的属性访问表达式，“，”和“［”前的表达式总是首先计算。如果结果是null或者undefined，表达式会抛出类型错误异常（TypeError）。虽然.identifier的写法更简单，但是这种方式只适用于要访问的属性名称是合法的标识符。如果属性名是保留字或者包含空格和标点符号，或是一个数字（对数组来说），则必须使用方括号写法。当属性名是通过运算得出的值而不是固定值的时候，也必须使用方括号。
+不管使用哪种形式的属性访问表达式，“，”和“［”前的表达式总是首先计算。如果结果是null或者undefined，表达式会抛出类型错误异常（TypeError）。虽然.identifier的写法更简单，但是这种方式只适用于要访问的属性名称是合法的*标识符*。如果属性名是保留字或者包含空格和标点符号，或是一个数字（对数组来说），则必须使用方括号写法。当属性名是通过运算得出的值而不是固定值的时候，也必须使用方括号。
 
 ---
 # 调用表达式
-JavaScript中调用表达式来调用（执行）函数。函数名后跟随圆括号，括号内是逗号分隔的参数列表，参数可以有0个或多个。jjjo
+JavaScript中调用表达式来调用（执行）函数。函数名后跟随圆括号，括号内是逗号分隔的参数列表，参数可以有0个或多个。
 .small[
 ```javascript
-   Wlib.baseUrl()       // Wlib.baseUrl是函数，它没有参数
-   Wlib.tips(that.hackJSLang("H5_CODE_ERR_OVER_TIMES"));
+    tempCheck(arr);         // 普通的函数调用在（全局window对象下）
 ```
 ]
 
 如果函数使用return语句给出返回值，这个返回值就是整个调用表达式的值。否则，调用表达式的值就是undefined。
-如果是按属性访问函数，那这个调用称做“方法调用”，执行函数体的时候，做为属性访问方法的对象和数组就是方法体内this的指向。
+如果是按属性访问函数，那这个调用称做“方法调用”，执行函数体的时候，**做为属性访问方法的对象和数组就是方法体内this的指向**。
 .small[
 ```javascript
+function Index() {};
+Index.prototype = {
     init: function () {
         var that = this;
         that.cacheDom();
@@ -204,6 +192,9 @@ JavaScript中调用表达式来调用（执行）函数。函数名后跟随圆�
             loading: $("#loading"),
         };
     }
+}
+
+var index = new Index();
 ```
 ]
 
@@ -279,7 +270,7 @@ typeof exp === 'undefined'
     1 + 2 + " proxies"  // => "3 proxies" 加法运算从由左至右结合
 ```]
 
-一元加法（+）运算符把数字转换为数字（或者NaN），并返回这个转换后的数字。如果操作数本身就是数字，则直接返回这个数字。
+一元加法（+）运算符把操作数转换为数字（或者NaN），并返回这个转换后的数字。如果操作数本身就是数字，则直接返回这个数字。
 .small[
 ```javascript
 +new Date       // 生成时间戳时常用 
@@ -292,22 +283,22 @@ typeof exp === 'undefined'
 
 * 严格相等运算符“===”首先计算操作数的值，然后比较两个值，比较过程没有任何类型转换：
 
-* 如果两个值类型不相同，则他们不相等
+* **如果两个值类型不相同，则他们不相等**
 
-* 如果两个值都是null或者都是undefined，则它们不相等
+* 如果两个值都是null或者都是undefined，则它们不相等  (*这条与实际运算结果不符*)
 
 * 如果两个值都是布尔值true或者是false，则他们相等
 
-* 如果其中一个值是NaN，或者两个值都是NaN，则它们不相等。NaN和其他任何值都是不相等的，包括它本身。
+* 如果其中一个值是NaN，或者两个值都是NaN，则它们不相等。**NaN和其他任何值都是不相等的，包括它本身**。
 
 * 如果一个值为0，另一个值为-0，它们同样相等
 
-* 如果两个字符串,且对应的16位数完全相同，则它们相等。如果长度或者内容不同，则它们不等（JavaScript使用Unicode字符集，仅支持UTF-16编码）。可以使用String.localeCompare()比较字符串
+* 如果两个字符串,且对应的16位数完全相同，则它们相等。如果长度或者内容不同，则它们不等（[JavaScript使用Unicode字符集](http://www.ruanyifeng.com/blog/2014/12/unicode.html)，仅支持UTF-16编码）。可以使用String.localeCompare()比较字符串
 
-* 如果两个引用值指向同一个对象、数组或函数，则它们相等。如果指向不同的对象，则它们不等，尽管两个对象具有完全一样的属性
+* 如果两个引用值指向同一个对象、数组或函数，则它们相等。**如果指向不同的对象，则它们不等**，尽管两个对象具有完全一样的属性
 
 ---
-* 相等运算符“==”和恒等运算符相似，但是如果两个操作数不是同一类型，那么相等运算符惠尝试进行一些类型转换：
+* 相等运算符“==”和恒等运算符相似，但是如果两个操作数不是同一类型，那么相等运算符会尝试进行一些类型转换：
 
 * 如果一个值是null，另一个是undefined，则它们相等
 
@@ -321,12 +312,12 @@ typeof exp === 'undefined'
 .small[
 ```javascript
 var obj = {
-    toString: function() { 
-        return 123;
-    },
-    valueOf: function() {
-        return 456;
-    }
+   toString: function() { 
+      return 123;
+   },
+   valueOf: function() {
+      return 456;
+   }
 };
 ```]
 
@@ -339,12 +330,12 @@ in运算符左测是一个字符串或者可以转换为字符串的操作数，
 
 注意和hasOwnProperty()方法的关系。
 
-instanceof运算符左侧是一个对象，右侧操作数是标示对象的类。所有对象都是Object的实例，通过instanceof判断一个对象是否为一个类的实例的时候，这个判断也会包含对“父类”(Object)的检测。
+instanceof**运算符**左侧是一个对象，右侧操作数是标示对象的类。所有对象都是Object的实例，通过instanceof判断一个对象是否为一个类的实例的时候，这个判断也会包含对“父类”(Object)的检测。
 
 注意和isPrototypeOf()方法的关系。
 
 ---
-逻辑表达式
+# 逻辑表达式
 
 逻辑运算符“&&”、“||”和“!”是对操作数进行布尔算数运算，经常和关系运算符一起使用。
 
