@@ -12,18 +12,16 @@ layout: false
 # 原始表达式
 JavaScript中原始表达式包含常量、直接量、关键字和变量。
 直接量是直接在程序中出现的常数值。
-
 .small[
 ```javascript
-       0xff    // 十六进制数值直接量
-       100     // 十进制数值直接量
-       "2014.8.8" //字符串直接量
-       /[\?\$]/gi //正则表达式直接量
+       0xff            // 十六进制数值直接量
+       100             // 十进制数值直接量
+       "2014.8.8"      //字符串直接量
+       /[\?\$]/gi      //正则表达式直接量
 ```
 ]
 
 JavaScript中的一些保留字构成原始表达式：
-
 .small[
 ```javascript
        true         // 布尔值：真 
@@ -34,15 +32,15 @@ JavaScript中的一些保留字构成原始表达式：
 ]
 
 第三种原始表达式是变量：
-
 .small[
 ```javascript
-    urls      //  返回urls的值
-    undefined   // undefined是全局变量，和null不同它不是一个关键字
+    lang            // 返回lang的值
+    urls            // 返回urls的值
+    undefined       // undefined是全局变量, 和null不同它不是一个关键字
 ```
 ]
 
-JavaScript会将标识符当做变量去查找它的值。如果变量名不存在，表达式运算结果为undefined。在ES5严格模式'use strict'中，对不存在的变量求值会抛出引用错误异常(ReferenceError)。
+JavaScript会将标识符当做变量去查找它的值。如果变量名不存在，表达式运算结果为[undefined](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/undefined)。在ES5严格模式'use strict'中，对不存在的变量求值会抛出引用错误异常(ReferenceError)。
 ---
 
 # 对象和数组的初始化表达式
@@ -83,7 +81,7 @@ JavaScript会将标识符当做变量去查找它的值。如果变量名不存�
 
 ---
 
-对象初始化表达式的值可以是任意JavaScript表达式。对象直接量中的属性名称可以是字符串而不是标识符（如果要使用JavaScript中的保留字或含有非法标识符做为属性名时就可以用字符串）:
+对象初始化表达式的值可以是任意JavaScript表达式。对象直接量中的属性名称可以是字符串而不是标识符（如果要使用JavaScript中的**保留字**或含有**非法标识符**做为属性名时就可以用字符串）:
 
 .small[
 ```javascript
@@ -98,7 +96,6 @@ JavaScript会将标识符当做变量去查找它的值。如果变量名不存�
 ```javascript
 {
     init: init,
-
           setItem: function (key, value, callback) {
               sendToFrame('set', key, value, callback);
     },
@@ -125,7 +122,6 @@ JavaScript会将标识符当做变量去查找它的值。如果变量名不存�
 ---
 # 函数定义表达式
 函数定义表达式定义一个JavaScript函数。表达式的值是这个新定义点函数。函数定义表达式包含关键字function，其后是一对圆括号，括号内是一个以逗号分割的标识符列表（参数名），然后再跟随一个由花括号包裹的JavaScript代码段（函数体），
-JavaScript代码段（函数体），
 .small[
 ```javascript
  U.getRndStr = function (length) {
@@ -143,7 +139,7 @@ JavaScript代码段（函数体），
 函数表达式可以包含函数名。函数也可以通过函数语句来定义，而不是函数表达式。
 .small[
 ```javascript
- function tempCheck(data) {
+ var tempCheck = function tempCheck(data) {
     for (var i = 0; i < data.length; i++) {
         if (data[i].val().trim() == "") {
             return false;
