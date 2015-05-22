@@ -143,7 +143,7 @@ JavaScript会将标识符当做变量去查找它的值。如果变量名不存�
 属性访问表达式得到一个对象属性或者一个数组元素的值。属性访问定义了两种语法：
 expression . **identifer**
 expression [ expression ]
-第一种写法表达式指定对象，标识符指定需要访问的属性名。第二种写法方括号里是另外一个表达式指定要要访问的属性名或者数组元素的索引。
+第一种写法表达式指定对象，标识符指定需要访问的属性名。第二种写法方括号里是另外一个表达式指定要访问的属性名或者数组元素的索引。
 .small[
 ```javascript
   for (var i = 0; i < data.length; i++) {
@@ -312,12 +312,12 @@ typeof exp === 'undefined'
 .small[
 ```javascript
 var obj = {
-   toString: function() { 
-      return 123;
-   },
-   valueOf: function() {
-      return 456;
-   }
+    toString: function() { 
+        return 123;
+    },
+    valueOf: function() {
+        return 456;
+    }
 };
 ```]
 
@@ -355,15 +355,16 @@ instanceof**运算符**左侧是一个对象，右侧操作数是标示对象的
  逻辑或（||）的“短路”行为，在代码中更多做为有条件的赋值：
  .small[
  ```javascript
-     uri = uri || window.location.href;     //如果uri的值转换后不为false，将uri的值赋值给uri，否则将window.location.href的值赋值给uri
+//如果uri的值转换后不为false，将uri的值赋值给uri，否则将window.location.href的值赋值给uri
+uri = uri || window.location.href;
 
-     if(uri) {
-        uri = uri;
-     } else {
-        uri = window.location.href;         //作用同上
-     }
+if(uri) {
+    uri = uri;
+} else {
+    uri = window.location.href;         //作用同上
+}
 
-    wduss = this.getRequestParam("uss") || this.localStorage.getItem("U_trackWduss") || "";
+wduss = this.getRequestParam("uss") || this.localStorage.getItem("U_trackWduss") || "";
  ```]
 ---
 # 赋值表达式
@@ -413,7 +414,8 @@ delete是一元操作符，用来删除对象属性或者数组元素。
     var x = 1;
     var o = {x : 1, y: 2};
     delete o.x;                         //删除属性x，返回true
-    delete x;                           //删除一个普通变量，在严格模式下抛出异常，非严格模式下返回true
+//删除一个普通变量，在严格模式下抛出异常，非严格模式下返回true
+    delete x;                     
 ```]
 
 void是一元运算符，操作数可以是任意类型，忽略计算结果返回undefined。经常用在客户端URL中-javascript:URL，
