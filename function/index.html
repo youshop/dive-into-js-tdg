@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>javaScript 函数</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+        <style type="text/css">
+            @import url(http://fonts.googleapis.com/css?family=Yanone+Kaffeesatz);
+            @import url(http://fonts.googleapis.com/css?family=Droid+Serif:400,700,400italic);
+            @import url(http://fonts.googleapis.com/css?family=Ubuntu+Mono:400,700,400italic);
+
+            body { font-family: 'Droid Serif'; }
+            h1, h2, h3 {
+                font-family: 'Yanone Kaffeesatz';
+                font-weight: normal;
+                margin-bottom: 0;
+            }
+            .master{ background: #272822;}
+            .master h1{ color: #f3f3f3;}
+            .remark-code, .remark-inline-code { font-family: 'Ubuntu Mono'; }
+            .remark-slide-content h1 {
+                font-size: 30px;
+                margin-top: 20px;
+            }
+
+            .footnote {
+                position: absolute;
+                font-size: small;
+                bottom: 3em;
+                right: 3em;
+            }
+        </style>
+    </head>
+    <body>
+        <script src="http://gnab.github.io/remark/downloads/remark-latest.min.js" type="text/javascript"></script>
+        <!--        <script type="text/javascript">
+            var hljs = remark.highlighter.engine;
+            </script>-->
+        <script type="text/javascript">
+                var slideshow = remark.create({
+                    sourceUrl: 'assets/content.md',
+                    highlightStyle: 'monokai'
+                });
+        </script>
+    </body>
+</html>
