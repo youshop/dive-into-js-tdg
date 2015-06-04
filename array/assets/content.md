@@ -699,8 +699,11 @@ s[1]                     //返回“e”
 可索引的字符串的最大的好处就是简单，用方括号代替了charAt()调用，这样更加简洁、可读并且可能更高效。不仅如此，字符串的行为类似于数组的事实使得通用的数组方法可以应用到字符串上。例如：
 .small[
 ```javascript
-var s = test;s.charAt(0);//返回“t” 
-s[1]                     //返回“e”  
+var s = “JavaScript”
+Array.prototype.join.call(s," ");   //=>"J a v a S c r i p t"
+Array.prototype.filter.call(s,      //过滤字符串中的字符串
+    function(x){return x.match(/[^aeiou]/);//只匹配非元音字母
+}).join()                           //"J,v,S,c,r,p,t"
 ```
 ]
 请记住，字符串是不可变值，故把它们当做数组看待时，它们是只读的。如push()、sort()、reverse()、splice()等数组方法会修改数组，它们在字符串上是无效的。不仅如此，使用数组方法来修改字符串会导致错误：出错时没有提示。
