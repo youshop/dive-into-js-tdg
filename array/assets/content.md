@@ -213,8 +213,7 @@ layout: false
    for(var i = 0; i < keys.length; i ++){//对于数组中每个索引
       var key = keys[i];              //获取索引处的键值
       values[i] = o[key];             //在values数组中保存属性值
-      console.log(values[i])
-   }
+      console.log(values[i]);}
 ```
 ]
 在嵌套循环或其他性能非常重要的上下文中，可以看到这种基本的数组遍历需要优化，数组的长度应该只循环一次而非每次都要查询：
@@ -238,7 +237,7 @@ layout: false
 .small[
 ```javascript
    for(var i = 0;i < a.length;i++){if(!(i in a)) continue;}
-                               //跳过null、undefined和不存在的元素
+                               //跳过不存在的元素
 ```
 ]
 还可以使用for/in循环处理稀疏数组。循环每次将一个可枚举的属性名（包括数组索引）赋值给循环变量。不存在的索引将不会遍历到：
@@ -415,7 +414,7 @@ splice()的前两个参数指定了需要删除的数组元素。紧随其后的
 ```javascript
    [1,2,3].toString();         //生成'1,2,3'
    ['a','b','c'].toString();   //'a,b,c'
-   [1,[2,''c]].toString();     //'1,2,c'
+   [1,[2,'c']].toString();     //'1,2,c'
 ```
 ]
 注意，这里与不适用任何参数调用join()方法返回的字符串是一样的。
@@ -699,8 +698,11 @@ s[1]                     //返回“e”
 可索引的字符串的最大的好处就是简单，用方括号代替了charAt()调用，这样更加简洁、可读并且可能更高效。不仅如此，字符串的行为类似于数组的事实使得通用的数组方法可以应用到字符串上。例如：
 .small[
 ```javascript
-var s = test;s.charAt(0);//返回“t” 
-s[1]                     //返回“e”  
+var s = “JavaScript”
+Array.prototype.join.call(s," ");   //=>"J a v a S c r i p t"
+Array.prototype.filter.call(s,      //过滤字符串中的字符串
+    function(x){return x.match(/[^aeiou]/);//只匹配非元音字母
+}).join()                           //"J,v,S,c,r,p,t"
 ```
 ]
 请记住，字符串是不可变值，故把它们当做数组看待时，它们是只读的。如push()、sort()、reverse()、splice()等数组方法会修改数组，它们在字符串上是无效的。不仅如此，使用数组方法来修改字符串会导致错误：出错时没有提示。
