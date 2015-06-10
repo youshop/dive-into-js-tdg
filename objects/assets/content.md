@@ -53,7 +53,7 @@ main();
 创建对象最简单的方式是在JS中使用对象直接量。属性名可以是JS标识符也可以是字符串直接量（包括空字符串）。属性值可以是任意JS表达式的值（原始值或对象值）。
 .small[
 ```javascript
-{
+var conf = {
     "env": "daily",
     "repository": {
         "type": "svn",
@@ -65,26 +65,28 @@ main();
 对象直接量每次运算都创建并初始化一个新的对象。如果在一个重复的过程中（循环或者重复调用的函数），它讲创建很多**新对象**，并且每次创建的对象的属性值也可能不同。
 .small[
 ```javascript
- server: {
-    options: {
-    protocal: 'http',
-    port: '80',
-    middleware: function(connect, options) {
-        var middlewares = [];
-        middlewares.push(rewriteRulesSnippet);
-       if(!Array.isArray(options.base)) {
-                options.base = [options.base];
-       }
-       var directory = options.directory || options.base[options.base.length - 1];
-       options.base.forEach(function (base) {
-                    middlewares.push(connect.static(base));
-       });
-       middlewares.push(connect.directory(directory));
-       return middlewares;
-       },
-       base: 'src'
+var exports = {
+    server: {
+        options: {
+             protocal: 'http',
+             port: '80',
+             middleware: function(connect, options) {
+              var middlewares = [];
+              middlewares.push(rewriteRulesSnippet);
+              if(!Array.isArray(options.base)) {
+                  options.base = [options.base];
+              }
+              var directory = options.directory || options.base[options.base.length - 1];
+              options.base.forEach(function (base) {
+                      middlewares.push(connect.static(base));
+                      });
+              middlewares.push(connect.directory(directory));
+              return middlewares;
+            },
+            base: 'src'
+         }
    }
- }
+}
 ```]
 ---
 ##通过new创建对象
@@ -116,4 +118,69 @@ var d = new Date();
 d.__proto__;
 d.__proto__.__proto__
 d.__proto__.__proto__.__proto__
+```]
+---
+##Object.create()
+ES5定义了名为Object.create()的方法，它创建一个新的对象。第一个参数是对象原型，第二个可选参数。将需要继承的对象（实际上是要继承对象中的属性）传入这个方法即可：
+.small[
+```javascript
+var conf = Object.create({
+  "env": "daily",
+  "repository": {
+     "type": "svn",
+     "url": "http://svn.geili.cn/geili_web/uss_server/ushop/branches/H5BuildTest"
+  }
+});
+```]
+
+conf**继承了**属性env和repository。注意与对象直接量定义的区别，可以通过hasOwnProperty方法来区分：
+.small[
+```javascript
+Object.prototype.hasOwnProperty.call(conf, 'env');
+```]
+---
+如果想创建一个普通的空对象（也就是创建如{}和new Object()一样对象），传入空对象的原型Object.prototype：
+.small[
+```javascript
+var o = Object.create(Object.prototype);
+```]
+在ES3中可以通过如下代码来模拟：
+.small[
+```javascript
+function inherit(p) {
+    if (p == null) throw TypeError();         // p是一个对象，不能是null
+    if (Object.create)                        // 如果Object.create()存在
+        return Object.create(p);              // 直接使用它
+    var t = typeof p;                         // 否则进一步检查
+    if ( t !== "object" && t !== "function") throw TypeError();
+    function f() {};                          // 定义一个空构造函数
+    f.prototype = p;                          // 将它的原型设置为p
+    return new f();                           // 使用f()创建p的继承对象
+}
+```]
+---
+##属性查询和设置
+可以通过点（.）和方括号（[]）运算符来获取属性的值。运算符左侧是一个表达式，它返回一个对象。对于（.）来说，右侧必须是一个属性名称命名的**标识符**。对于方括号（[]）来说，方括号内必须是一个计算结果为字符串的表达式，这个字符串就是属性名字：
+.small[
+```javascript
+  this.data.multiLang[key];        // data和multiLang都为**标识符**, key的计算结果是**字符串**
+```]
+通过点和方括号也可以创建属性或给属性赋值：
+.small[
+```javascript
+  this.dom = {};
+  //属性名"password"为表示符可以用点（.）创建属性
+  this.dom.password = $("#password");   
+  //属性名"tele-number"中含有非法表示符"-"，所以属性名只能作为字符串并用方括号（[]）设置属性
+  this.dom.["tele-number"] = $('#telenumber'); 
+```]
+---
+##作为关联数组的对象
+由于可以使用方括号（[]）方式对象的属性。在JS中的对象也被成为关联数组。使用方括号（[]）访问对象更为灵活，属性的名称可以在程序中动态运算得到，而点（.）方式只能使用表示符，它是静态的，必须写在程序中。
+.small[
+```javascript
+  hackJSLang: function (key) {
+      var that = this;
+      return that.data.multiLang[key];
+  },
 ```]
