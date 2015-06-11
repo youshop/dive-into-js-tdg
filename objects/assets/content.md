@@ -9,7 +9,7 @@ created with [remark](http://github.com/gnab/remark)
 
 ---
 layout: false
-#对象
+###对象
 JavaScript中的对象是属性的无序集合，每个属性都是名/值对。除了字符串，数字，true，false，null和undefined之外，JavaScript的值都是对象。JavaScript对象是引用数据类型，如果变量x是指向一个对象的引用，那么执行代码var y = x；变量y也是指向同一个对象的引用，而非这个对象的副本。通过变量y修改这个对象也会对变量x造成影响。
 ---
 .small[
@@ -257,7 +257,7 @@ o2.hasOwnProperty("x");         // false, "x"是继承与o的属性
 o2.hasOwnProperty("toString");      // false, "toString"是继承自Object.prototype的属性
 ```]
 ---
-##枚举属性
+###枚举属性
 可以使用for/in遍历对象的属性。它可以变量所有可枚举的属性包括自有属性和**继承**的属性。对象继承的内置方法不可枚举。比如：
 .small[
 ```javascript
