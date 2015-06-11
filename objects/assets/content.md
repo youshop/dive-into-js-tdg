@@ -445,3 +445,108 @@ o.x;                    //=> 2
 Object.defineProperty(o, "x", {get: function() { return 0;} });
 o.x;                    //=> 0
 ```]
+要修改或创建多个属性，需要使用Object.defineProperties()，
+.small[
+```javascript
+var serialnum = Object.defineProperties({}, {
+   $n: {value: 0, writable: true, enumerable: true, configurable: true},
+   next: { get: function() {return this.$n++; },
+   set: function(n) {
+    if( n >= this.$n) this.$n = n;
+    else throw '序列号不能比当前值小';
+    }
+   }
+});
+```]
+---
+###原型属性
+原型是用来继承其中的属性的，它在实例对象创建之初就设置好了。通过对象直接量创建的对象使用Object.prototype作为它们的原型。通过new创建的对象使用构造函数的prototype属性作为他们的原型。通过Object.create()创建的对象使用第一个参数（也可以是null）作为它的原型。
+在ES5中可以通过Object.getPrototypeOf()查询它的原型。要检测一个对象是否是另一个对象的原型（或处于原型链中），可以使用isPrototypeOf()方法。
+.small[
+```javascript
+var p = {x: 1};
+var o = Object.create(p)
+Object.getPrototypeOf(p);                 //=> Object.prototype
+Object.getPrototypeOf(o);                 //=> {x: 1}
+p.isPrototypeOf(o);                       //=> true, o继承自p
+Object.prototype.isPrototypeOf(o);        // => true; o继承自Object.prototype
+```]
+Firefox, Chrome等浏览器（除了IE和Opera外）对外暴露了__proto__属性，用来查询/设置对象的原型。
+---
+###类属性
+对象的类属性（class attribute）是一个字符串，表示对象的类信息。可以用Object.prototype的toString()方法返回这个字符串格式，一个类属性的实现，
+.small[
+```javascript
+function classof(o) {
+   if( o === null) return "Null";
+   if( o === undefined) return "Undefined";
+      return Object.prototype.toString.call(o).slice(8, -1);
+}
+
+classof(null);          // => "Null"
+classof(1);             // => "Number"
+classof(window);        // => "Window"
+function f() {};
+classof(new f());       // => "Object"
+classof(f);             // => "Function"
+```]
+---
+###序列化对象
+对象序列化（serialization）是指将对象的状态转换为字符串，也可以将字符串还原为对象。ES5提供内置函数JSON.stringify()和JSON.parse()用来序列化和还原JS对象。这些方法都使用**JSON**作为数据交换格式。JSON不能表示JavaScript里的所有值。JSON.stringify()只能序列化对象可枚举的自有属性。对不能序列化的属性来说，序列化后的字符串将这个属性省略掉。
+.small[
+```javascript
+var param = "param=" + JSON.stringify(data);   //作为参数时序列化为字符串
+var data = JSON.parse(data);                   //字符串转换为JavaScript对象
+```]
+.small[
+```javascript
+var param = {
+   password: that.dom.password.val(),
+   telephone: that.dom.telenumber.val(),
+   client_type: "H5"
+}
+var param = JSON.stringify(param);
+param.type = "5";
+
+Wlib.SendRequest(Wlib.config().loginPort + "/seller/login?" + param, function (data) {});
+```]
+---
+###对象方法
+toString()方法返回这个方法对象的字符串。在需要将对象转换为字符串的时候，JavaScript都会调用这个方法.
+.small[
+```javascript
+(new Date).toString();  // "Thu Jun 11 2015 18:23:58 GMT+0800 (CST)"
+({}).toString();                  // "[object Object]"
+(true).toString();              // "true"
+```]
+Array.toString(), Date.toString()和Funcion.toString()都有自己对toString()方法的重写方式。
+toLocaleString()方法返回对象本地化字符串。Object.toLocaleString()方法仅是调用toString()方法。Date和Number类对toLocaleString()做了定制，
+.small[
+```javascript
+var date = new Date(Date.UTC(2012, 11, 20, 3, 0, 0));
+console.log(date.toLocaleString('en-US'));
+// "12/19/2012, 7:00:00 PM"
+console.log(date.toLocaleString(['ban', 'id']));
+// "20/12/2012 11.00.00"
+```]
+.small[
+```javascript
+var number = 123456.789;
+console.log(number.toLocaleString('zh-Hans-CN-u-nu-hanidec'));
+//  一二三,四五六.七八九
+console.log(number.toLocaleString(['ban', 'id']));
+// 123.456,789
+```]
+---
+valueOf()方法和toString() 方法类似，JS在将对象转换为某种原始值而非字符串的时候会调用它，**尤其是转换为数字的时候**。如果在需要使用原始值的上下文中使用了对象，JS会自动调用这个方法。
+.small[
+```javascript
+o = new Object();
+myVar = o.valueOf();      // [object Object]
+
+var x = new String('Hello world');
+console.log(x.valueOf()); // Displays 'Hello world'
+
+var x = new Date(56, 6, 17);
+var myVar = x.valueOf();      // assigns -424713600000 to myVar
+```]
