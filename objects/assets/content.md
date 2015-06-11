@@ -269,45 +269,179 @@ for(p in o)             //遍历会输出x, y, 和z但是不回输出不可枚�
 .small[
 ```javascript
 function extend(o, p) {
-            for (prop in p) {
-                            o[prop] = p[prop];
-                                   }
-                                          return o;
+    for (prop in p) {
+        o[prop] = p[prop];
+    }
+    return o;
 }
 ```]
 .small[
 ```javascript
-    function merge(o, p) {
-            for (prop in p) {
-                        if(o.hasOwnProperty[prop]) continue;
-                                    o[prop] = p[prop];
-                                           }
-                                                  return o;
- }
+function merge(o, p) {
+    for (prop in p) {
+        if(o.hasOwnProperty[prop]) continue;
+        o[prop] = p[prop];
+    }
+    return o;
+}
 ```]
 ---
 .small[
 ```javascript
-    function restrict(o, p) {
-            for (prop in o) {
-                     if(! (prop in p) ) 
-                                    delete o[prop];
-                                           }
-                                                  return o;
+function restrict(o, p) {
+    for (prop in o) {
+        if(! (prop in p) ) 
+            delete o[prop];
     }
+    return o;
+}
 ```]
 .small[
 ```javascript
 function subtract(o, p) {
-            for (prop in p) {
-                            delete o[prop];
-            }
-     return o;
+    for (prop in p) {
+        delete o[prop];
+    }
+    return o;
 }
 ```]
 .small[
 ```javascript
-    function union(o, p) {
-             return extend(extend({}, o), p); }
+function union(o, p) {
+    return extend(extend({}, o), p); }
 }
+```]
+除了for/in循环之外，ES5定义了两个可以枚举属性名称的函数。一个是Object.keys()，发返回一个数组，包含所有**可枚举的**自有属性。另一个是Object.getOwnPropertyNames(),它返回对象的所有自有属性名称，而不仅仅是可枚举的属性。
+---
+###属性getter和setter
+传统getter和setter方法：
+.small[
+```javascript
+function Field(val) {
+     this.value = val;
+      this.getValue = function(){
+          return this.value;
+      }
+      this.setValue = function(val) {
+          this.value = val;
+      }
+}
+
+var field = new Field('new value');
+field.getValue();                           //=> "new value"
+field.setValue('update value'); 
+field.getValue();                          //=> "update value
+field.value = "not actually wanted";
+field.getValue();                          //=> "not actually wanted"
+```]
+---
+.small[
+```javascript
+function Field(val) {
+    var value = val;
+    this.getValue = function(){
+        return value;
+    };
+    this.setValue = function(val) {
+        value = val;
+    };
+}
+
+var field = new Field('new value');
+field.getValue();                           //=> "new value"
+field.setValue('update value'); 
+field.getValue();                          //=> "update value
+field.value = "not actually wanted";
+field.getValue();                          //=> "update value"
+```]
+JS中是否能使用设置器和访问器操作属性，例如，
+.small[
+```javascript
+field.value;                                //=> "new value"
+field.value = 'update value';      
+```]
+---
+在ES5中，由get和set定义的属性称作“存取器属性”。如果一个属性自由get修饰，那么它是只读属性，如果只有set修饰那么它是只写属性。
+.small[
+```javascript
+Field = {
+     val : 'new value',
+     get value(){
+        return this.val;
+     },
+     set value(val) {
+        this.val = val;
+     }
+};
+Field.value;                                   //=> "new value"
+Field.value = 'update value'; 
+Field.value;                                  //=> "update value
+Field.value = "This is we wanted";
+Field.value;                                 //=> "This is we wanted"
+```]
+---
+.small[
+```javascript
+var circle = {
+  r: 1.0,
+  get radius() {
+      return this.r;
+  },
+  set radius(r) {
+      this.r = r;
+  }
+  // area是只读属性，没有setter，只有getter
+  get area() {
+     return 3.1415 * this.r * this.r;
+  }
+}
+```]
+
+.small[
+```javascript
+var serialnum = {
+    $n: 0,
+    get next() { return this.$n++; },
+
+    set next(n) {
+        if( n >= this.$n) this.$n = n;
+        else throw '序列号不能比当前值小';
+    }
+}
+```]
+---
+###属性的特征
+除了包含名字和值之外，属性还包含标识它们可写，可枚举和可配置的特性。在ES3中无法设置这些特性，所有创建的属性都是可写，可枚举和可配置的，而无法对这些特性做修改。在ES5中可以查询和设置这些特性。数据属性的4个特性是值（value），可写性（writable），可枚举性（enumerable），可配置性（configurable）。存取器有读取（get），写入（set），可枚举和可配置。通过Object.getOwnPropertyDescriptor()可以获取某个对象特定属性的属性描述符：
+.small[
+```javascript
+//返回{value: 1, writable: true, enumerable: true, configurable: true}
+Object.getOwnPropertyDescriptor({x: 1}, "x");
+
+//返回{ configurable: true,  enumerable: true, get: /*func*/, set: /*func*/
+Object.getOwnPropertyDescriptor(serialnum, "next"); 
+
+// 对于继承属性和不存在的属性，返回undefined
+Object.getOwnPropertyDescriptor({}, "x");     // undefined,
+Object.getOwnPropertyDescriptor({}, "toString") // undefined
+```]
+---
+要设置属性的特性，需要调用Object.defineProperty(),传入要修改的对象，要创建或者修改的属性名和属性描述符对象：
+.small[
+```javascript
+var o = {};
+//添加不可枚举的数据属性x，并赋值为1
+Object.defineProperty(o, "x", { value: 1,
+        writable: true,
+        enumerable: false,
+        configurable: true});
+o.x;                    //=> 1
+Object.keys(o);         // =>[]
+
+Object.defineProperty(o, "x",  {writable: false}); 
+o.x = 2;                // 操作失败但不报错，严格模式类型异常
+o.x;                    //=> 1
+Object.defineProperty(o, "x", { value: 2});
+o.x;                    //=> 2
+Object.defineProperty(o, "x", {get: function() { return 0;} });
+o.x;                    //=> 0
 ```]
