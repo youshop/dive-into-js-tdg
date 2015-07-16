@@ -186,26 +186,26 @@ function inherit(p) {
 ```]
 ---
 ###继承
-在对象本身定义的属性称作”自有属性“（own property），也有一些属性是从原型对象继承而来的。假设要查询对象o的属性x，如果o中不存在x ，那么将会继续在o的原型对象中查询属性x。如果原型对象中也没有x，则继续在这个原型对象的原型上执行查询，直到找到x或者查找到一个原型是null的对象为止。JS中就是通过这个“链”实现属性的继承。
+在对象本身定义的属性称作“自有属性”（own property），也有一些属性是从原型对象继承而来的。假设要查询对象o的属性x，如果o中不存在x ，那么将会继续在o的原型对象中查询属性x。如果原型对象中也没有x，则继续在这个原型对象的原型上执行查询，直到找到x或者查找到一个原型是null的对象为止。JS中就是通过这个“链”实现属性的继承。
 .small[
 ```javascript
-var o = {}     // o 从Object.prototype继承对象的方法
-o.x = 1;       //  给o定义一个属性x
-var p = inherit(0);  // p继承o的Object.prototype
-p.y = 2;                  // 给p定义一个属性y
-var q = inherit(p); // q继承p、o和Object.prototype
-q.z = 3;             // 给q定义一个属性z
+var o = {}              // o 从Object.prototype继承对象的方法
+o.x = 1;                // 给o定义一个属性x
+var p = inherit(0);     // p继承o的Object.prototype
+p.y = 2;                // 给p定义一个属性y
+var q = inherit(p);     // q继承p、o和Object.prototype
+q.z = 3;                // 给q定义一个属性z
 var s = q.toString();   // toString继承自Object.prototype
 q.x + q.y               // => 3:  x和y分别继承自o和p
 ```]
-如果对o的属性做赋值操作，它总是在原始对象上创建属性和对已有属性赋值，而*不会*去修改原型链。在JS中，继承的特征只有在属性访问时才发生，而设置属性时没有这一特征。
+如果对o的属性做赋值操作，它总是在原始对象上创建属性和对已有属性赋值，而**不会**去修改原型链。在JS中，继承的特征只有在属性访问时才发生，而设置属性时没有这一特征。
 .small[
 ```javascript
 var unitcircle = { r: 1}; 
 var c = inherit(unitcircle);       // c继承属性r
 c.x = 1; c.y = 1;                  // c定义两个属性
 c.r = 2;                           // c覆盖继承来的属性r
-unitcircle.r;                     // => 1, 原来的对象没有修改
+unitcircle.r;                      // => 1, 原来的对象没有修改
 ```]
 ---
 ###属性访问错误
@@ -253,7 +253,7 @@ hasOwnProperty()方法用来检测给定属性是否是对象自有属性。对�
 var o = {x: 1};
 o.hasOwnProperty("x");
 var o2 = inherit(o);                // o2 继承 o的属性
-o2.hasOwnProperty("x");         // false, "x"是继承与o的属性
+o2.hasOwnProperty("x");             // false, "x"是继承与o的属性
 o2.hasOwnProperty("toString");      // false, "toString"是继承自Object.prototype的属性
 ```]
 ---
@@ -262,9 +262,8 @@ o2.hasOwnProperty("toString");      // false, "toString"是继承自Object.proto
 .small[
 ```javascript
 var o = {x: 1, y:2, z:3};
-for(p in o)             //遍历会输出x, y, 和z但是不回输出不可枚举属性如toString，
-    o.propertyIsEnumerable("toString");     //=>false, 不可枚举
-    列举一些有用的工具函数，这些函数都用到了for/in循环。
+for(p in o)                                 //遍历会输出x, y, 和z但是不回输出不可枚举属性如toString，
+    o.propertyIsEnumerable("toString");     //=>false, 不可枚举列举一些有用的工具函数，这些函数都用到了for/in循环。
 ```]
 .small[
 ```javascript
@@ -329,9 +328,13 @@ function Field(val) {
 
 var field = new Field('new value');
 field.getValue();                           //=> "new value"
+
 field.setValue('update value'); 
+
 field.getValue();                          //=> "update value
+
 field.value = "not actually wanted";
+
 field.getValue();                          //=> "not actually wanted"
 ```]
 ---
@@ -339,19 +342,26 @@ field.getValue();                          //=> "not actually wanted"
 ```javascript
 function Field(val) {
     var value = val;
+
     this.getValue = function(){
         return value;
     };
+
     this.setValue = function(val) {
         value = val;
     };
 }
 
 var field = new Field('new value');
+
 field.getValue();                           //=> "new value"
+
 field.setValue('update value'); 
+
 field.getValue();                          //=> "update value
+
 field.value = "not actually wanted";
+
 field.getValue();                          //=> "update value"
 ```]
 JS中是否能使用设置器和访问器操作属性，例如，
@@ -366,17 +376,23 @@ field.value = 'update value';
 ```javascript
 Field = {
      val : 'new value',
+
      get value(){
         return this.val;
      },
+
      set value(val) {
         this.val = val;
      }
 };
 Field.value;                                   //=> "new value"
+
 Field.value = 'update value'; 
+
 Field.value;                                  //=> "update value
+
 Field.value = "This is we wanted";
+
 Field.value;                                 //=> "This is we wanted"
 ```]
 ---
