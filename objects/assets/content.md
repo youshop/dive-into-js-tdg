@@ -317,13 +317,13 @@ function union(o, p) {
 .small[
 ```javascript
 function Field(val) {
-     this.value = val;
-      this.getValue = function(){
-          return this.value;
-      }
-      this.setValue = function(val) {
-          this.value = val;
-      }
+    this.value = val;
+    this.getValue = function(){
+        return this.value;
+    }
+    this.setValue = function(val) {
+        this.value = val;
+    }
 }
 
 var field = new Field('new value');
@@ -409,8 +409,7 @@ var circle = {
   // area是只读属性，没有setter，只有getter
   get area() {
      return 3.1415 * this.r * this.r;
-  }
-}
+  } }
 ```]
 
 .small[
