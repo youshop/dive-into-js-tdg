@@ -26,7 +26,7 @@
       pre code .params { color: #87A558; }
       pre code .literal { }
       ul { }
-      li { margin-bottom: 1.2em; }
+      li { margin-bottom: 1em; }
 
       p > code, li > code { padding: 1px 4px; border: 1px solid #CCC; background-color: #EEE; }
 
@@ -100,13 +100,11 @@ DOMContentLoaded和readystatechange是load事件的替代方案，当文档和�
         window.attachEvent( "onload", completed );
 
 ---
-### 鼠标事件
-当用户移动或点击鼠标时都会产生鼠标事件。传递给鼠标事件的事件对象有属性集合，包含clientX和clientY属性，button和which指定了鼠标按键上哪个。当键盘辅助键按下时，对应的altKey, ctrlKey和shiftKey会设置为true。
-
----
 ## 注册事件处理程序
 
-注册事件处理程序有两种基本方式。第一种出现在Web初期，给事件目标对象或文档元素设置属性。第二种方式将事件处理程序传递给对象或元素的一个方法（标准方法命名为addEventListener()，除IE8及以前版本之外，而IE9之前的IE版本使用attachEvent()的方法）。
+IE9之前IE不支持addEventListener()，IE5之后才有了类似的方法attachEvent()和detachEvent()。
+* IE事件模型不支持事件捕获，所以attachEvent只要求事件类型和处理程序函数
+* 要给attachEvent()传递"on"前缀，如"onclick"
 
 ### 设置JavaScript对象属性为事件处理程序
 按照约定，事件处理程序属性的名字由"on"后面跟着事件名组成：onclick、onchange、onload、onmouseover等。**区分大小写**，所有都是小写，即使事件类型是由多个词组成（比如“readystatechange”）
@@ -121,7 +119,7 @@ DOMContentLoaded和readystatechange是load事件的替代方案，当文档和�
     }
 
 ---
-### 设置HMLT标签属性为事件处理程序
+### 设置HTML标签属性为事件处理程序
 设置HTML标签属性为事件处理函数的主体，也可以注册事件处理程序
 
     .javascript
@@ -135,6 +133,21 @@ onunload   | onerror    | onoffline      | onredo
 
 ### addEventListener()
 在除IE8及之前版本外的所有浏览器都支持的事件都支持使用addEventListener()方法。它接受三个参数，第一个是要注册处理程序的事件类型的字符串，第二个是事件发生时要调用的函数。最后一个参数是布尔值，通常情况下传递false。如果相反传递了true，那么函数将注册为捕获事件处理程序。[事件冒泡和捕获的区别](./code/buble-capture.html)
+
+---
+### attachEvent()
+IE9之前IE不支持addEventListener()，IE5之后才有了类似的方法attachEvent()和detachEvent()。
+* IE事件模型不支持事件捕获，所以attachEvent只要求事件类型和处理程序函数
+* 要给attachEvent()传递"on"前缀，如"onclick"
+
+---
+### 事件处理的返回值
+事件处理程序返回值为false的时候会阻止事件的默认操作。例如，表单提交按钮的onclick事件程序返回false阻止浏览器提交表单。输入域的onkeypress事件处理程序返回false来过滤键盘输入。
+
+### 调用顺序
+* 通过设置对象属性或HTML属性注册的处理程序一直优先
+* 使用addEventListener()注册的处理程序按照他们注册的顺序调用
+* 使用attachEvent()注册的处理程序**可能**按照任何顺序调用，代码不应依赖于调用顺序
 
 ---
 .center.middle
