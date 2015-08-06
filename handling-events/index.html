@@ -150,6 +150,120 @@ IE9之前IE不支持addEventListener()，IE5之后才有了类似的方法attach
 * 使用attachEvent()注册的处理程序**可能**按照任何顺序调用，代码不应依赖于调用顺序
 
 ---
+##事件传播
+事件传播的三个阶段分别是：
+
+1. “捕获”阶段（将addEventListener()的第三个参数设置为true，事件处理处理程序注册为捕获事件处理程序）
+2. 第二个阶段是处理程序调用
+3. 第三个阶段是事件“冒泡”阶段，它能用在包括IE在内的所有浏览器中，它是事件“捕获”的反向阶段
+
+![.icon](./assets/images/bubble.jpg)
+![.icon](./assets/images/event-order-w3c.gif)
+
+---
+###事件取消
+在支持addEventListener()的浏览器中，通过preventDefault()方法取消事件的默认操作。中IE9之前点IE中，通过设置事件对象的returnValue属性为false来达到同样的效果。
+
+    .javascript
+    function cancelHandler(event) {
+        var event = event || window.event;
+        
+        if(event.preventDefault) event.preventDefault();
+        if(event.returnValue) event.returnValue = false;
+        return false;
+    }
+
+---
+## 自定义事件
+### 观察者模式
+
+![icon](./assets/images/javascript-observer.jpg)
+
+* notify() - trigger()
+* subscrible() - addEventListener(), on()
+* unsubscribe() - removeEventListener(), off()
+
+---
+## 模拟事件对象
+
+    .javascript
+     var Event = function() {
+        this.subscribers = [];
+     };
+     Event.prototype = {
+        on: function(callback) {
+            this.subscribers.push(callback);
+        },
+        off: function(callback) {
+            var i = 0,
+            len = this.subscribers.length;
+
+            for (; i < len; i++) {
+                if (this.subscribers[i] === callback) {
+                    this.subscribers.splice(i, 1);
+                    return;
+                }
+            }
+        },
+
+---
+### trigger方法    
+
+    .javascript
+        trigger: function(data) {
+            var i = 0,
+            len = this.subscribers.length;
+
+            for (; i < len; i++) {
+                this.subscribers[i](data);
+            }        
+        }
+    };
+
+    var handler = function (data) {
+        alert(JSON.stringify(data));
+    } 
+
+[运行事件对象模拟](./code/events.html)
+
+---
+### 
+    .javascript
+    var Event = function() {
+        this.evtMap = {};
+    }; 
+
+    Event.prototype = {
+        on: function(type, callback) {
+            if(!this.evtMap[type]) {
+                   this.evtMap[type] = [];
+               }
+               this.evtMap[type].push(callback);
+           },
+        off: function(type) {
+               delete this.evtMap[type];
+        },
+
+---
+###
+    .javascript
+        trigger: function(type, data) {
+            if(!this.evtMap[type]) { 
+                   return;
+               }
+               var i = 0,
+               len = this.evtMap[type].length;
+
+               for (; i < len; i++) {
+                   this.evtMap[type][i](data);
+               }        
+           }
+       };
+
+---
+
+
+
 .center.middle
 # Node.js er asynkront
 

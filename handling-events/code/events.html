@@ -1,0 +1,71 @@
+<!doctype html>
+<html>
+    <head>
+        <title>Events Observable/Publisher</title>
+    </head>
+    <body>
+        <div>
+            <button id="on">Add event listener</button>
+            <button id="off">Remove event listener</button>
+            <button id="trigger">Trigger event</button>
+        </div>
+        <script>
+
+            var Event = function() {
+                this.subscribers = [];
+            };
+
+            Event.prototype = {
+                on: function(callback) {
+                    // In most situations, you would check to see if the
+                    // callback already exists within the subscribers array,
+                    // but for the sake of keeping us on track and because
+                    // this isn't necessarily included, we'll leave it out.
+                    // Just add the callback to the subscribers list
+                    this.subscribers.push(callback);
+                },
+                off: function(callback) {
+                    var i = 0,
+                    len = this.subscribers.length;
+
+                    // Iterate through the array and if the callback is
+                    // found, remove it.
+                    for (; i < len; i++) {
+                        if (this.subscribers[i] === callback) {
+                            this.subscribers.splice(i, 1);
+                            // Once we've found it, we don't need to
+                            // continue, so just return.
+                            return;
+                        }
+                    }
+                },
+                trigger: function(data) {
+                    var i = 0,
+                    len = this.subscribers.length;
+
+                    // Iterate over the subscribers array and call each of
+                    // the callback functions.
+                    for (; i < len; i++) {
+                        this.subscribers[i](data);
+                    }        
+                }
+            };
+
+            var handler = function (data) {
+                alert(JSON.stringify(data));
+            }
+
+            var click = new Event();
+
+            document.getElementById('on').onclick = function() {
+                click.on(handler);
+            }
+            document.getElementById('off').onclick = function() {
+                click.off(handler);
+            }
+            document.getElementById('trigger').onclick = function() {
+                click.trigger({ type: 'click', srcElement: 'any elements'});
+            }
+        </script>
+    </body>
+</html>
