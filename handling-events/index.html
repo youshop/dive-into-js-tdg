@@ -50,9 +50,6 @@
   </head>
   <body>
     <textarea id="source">
-<big>Håvard Stranden</big><br/>
-
----
 .center.middle
 # 事件处理 
 
@@ -261,300 +258,87 @@ IE9之前IE不支持addEventListener()，IE5之后才有了类似的方法attach
        };
 
 ---
+## HTML5 事件
+一个新的对象API, Server-Sent Events(SSE)，应用“注册”服务器端的数据源，一旦当服务器端产生新数据，就会向客户端发送一个通知，客户端可以得到新的数据。
+Ajax Polling，和HTTP长链接的局限, SSE可以推送数据到客户端应用。客户端只有监听“message“事件即可，SSE建立了客户端到服务器的**单向**通道(服务器端到客户端)。
 
-
-
-.center.middle
-# Node.js er asynkront
-
-No-no:
+---
+#
 
     .javascript
-    var contents = fs.readFileSync('foo.txt');
-    console.log(contents);
-
-Yes-yes:
-
-    .javascript
-    fs.readFile('foo.txt', function(contents) { 
-      console.log(contents); 
-    });
-
----
-
-.center.middle
-
-## Events er innebygd
-
-Innebygde `events.EventEmitter` er vår venn:
-
-    .javascript
-    var file = fs.createReadStream('foo.txt');
-    file.on('data', function(data) {
-      console.log(data);
-    });
-
----
-
-.center.middle
-
-## HTTP er enkelt
-
-    .javascript
-    require('http').createServer(
-      function(req, res) {
-        res.writeHead(200, 
-          {'Content-Type': 'text/plain'});
-        res.end('Hei, Trondheim!');
-    }).listen(1337);
-
----
-
-.center.middle
-
-## TCP også
-
-    .javascript
-    require('net').createServer(function(socket) {
-      socket.write('Here be echo.');
-      socket.pipe(socket);
-    }).listen(1337);
-
----
-.center.middle
-
-## Hvem bruker Node.js?
-
-<img src="presentation/whodunnit.png" width="100%" />
-
----
-.middle
-
-## LinkedIn: Mobil
-
-* iOS
-* Android
-* WP7
-* m.linkedin.com
-
----
-.middle
-## Shopify: Batman.js
-
-* Rapportering
-* Interne applikasjoner
-
----
-.middle
-## Microsoft: Skyen
-
-* Node.js på Windows
-* Node.js på Azure
-* Node.js i IIS
-
----
-
-.middle
-
-## Yahoo: Graceful degradation
-
-* Server-side-rendring for inkompatible klienter
-* Gjenbruke Javascript
-* En stor fremtid for Node.js
-
----
-
-.middle
-## Hva med biblioteker?
-* "Operativsystemstøtte" innebygd
-  * Prosessmodell
-  * Filsystem
-  * Nettverk
-  * Krypto
-  * Etc.
-* NPM, pakkesystem for tredjeparts bibliotek
-
----
-
-.center.middle
-<img src="presentation/npm.png" width="80%" />
-
-Innebygd pakkestyring for Node.js
-
----
-.middle
-## NPM-kommandoer
-
-* `npm search <query>`
-* `npm install <pakke>`
-* `npm install -g <pakke>`
-* `npm uninstall <pakke>`
-
----
-.middle
-## NPM-installeringer
-
-* Pakker lever i `node_modules`
-* Globale pakker i global `node_modules`
-* Kan installere biblioteker, binærfiler, etc.
-
----
-.center.middle
-
-## Lage egne pakker
-
-`package.json`
-
-    .javascript
-    { "name": "openid",
-      "description": "OpenID 1.1/2.0 " +
-                     "library for node.js",
-      "author": { 
-        "name": "Håvard Stranden",
-        "email": "havard.stranden@gmail.com",
-        "web": "http://ox.no" },
-      "version": "0.4.1",
-      "engines" : [ "node >= 0.6.0" ]
+    if (!!window.EventSource) {
+        var source = new EventSource('stream.php');
+    } else {
+        // Result to xhr polling :(
     }
 
-`npm publish`
+    source.addEventListener('message', function(e) {
+      console.log(e.data);
+    }, false);
+
+    source.addEventListener('open', function(e) {
+        // Connection was opened.
+    }, false);
+
+    source.addEventListener('error', function(e) {
+        if (e.readyState == EventSource.CLOSED) {
+         // Connection was closed.
+        }
+    }, false);
 
 ---
-
-.left.middle
-
-## Toolchain
-
-* Node
-* Teksteditor
-* Debugger
-  * node debug 
-  * node-inspector
-  * ndb
-* IDE
-  * Cloud9
-  * Jetbrains WebStorm
-
----
-
-.center.middle
-## Demo: Drawnode
-
----
-
-.center.middle
-<img src="presentation/javascriptize.jpg" width="80%" />
-
----
-
-.center.middle
-
-<img src="presentation/newthing.jpg" width="80%" />
-
----
-
-.middle
-## Callback hell
+事件流格式
+服务器端返回数据格式的Content-Type是text/event-stream类型，格式为
 
     .javascript
-    fs.readFileSync('foo.txt', function(data) {
-      data.split('\n').forEach(function(i, line) {
-        line.split(' ').forEach(function(j, word) {
-          // ...
-        });
-      });
-    });
+    data: My message\n\n
+
+JSON 数据为,
+
+    .javascript
+    data: {\n
+    data: "msg": "hello",\n
+    data: "id": 13131\n
+    data: }\n\n
+
+客户端监听message事件并处理，
+
+    .javascript
+    source.addEventListener('message', function(e) {
+        var data = JSON.parse(e.data);
+        console.log(data.id, data.msg);
+    }, false);
+
+[运行示例](./code/html5evt/sse-node.html)
 
 ---
+### HTML5 touch 事件
 
-.middle
-
-## Manglende bibliotek
-
-* SQL?
-* ORM?
-* XML?
-
----
-
-.middle
-## Endringstakt
-* Ustabilt API
-* Brukne komponenter
-* Lite fullskala-testing
+    .javascript
+    var obj = document.getElementById('id');
+    obj.addEventListener('touchmove', function(event) {
+        // If there's exactly one finger inside this element
+        if (event.targetTouches.length == 1) {
+            var touch = event.targetTouches[0];
+            // Place element where the finger is
+            obj.style.left = touch.pageX + 'px';
+            obj.style.top = touch.pageY + 'px';
+        }
+    }, false);
 
 ---
+##
+    .javascript
+    canvas.addEventListener('touchmove', function(event) {
+        for (var i = 0; i < event.touches.length; i++) {
+        var touch = event.touches[i];
+        ctx.beginPath();
+        ctx.arc(touch.pageX, touch.pageY, 20, 0, 2*Math.PI, true);
+        ctx.fill();
+        ctx.stroke();
+        }
+    }, false);
 
-.center.middle
-
-## Ting man lurer på
-
-<img src="presentation/philosoraptor.jpg" width="70%" />
-
----
-
-.center.middle
-## Bør jeg bytte til Node.js?
-
-Nei.
-
----
-
-.center.middle
-## Bør jeg vurdere Node.js som plattform?
-
-Ja, i noen tilfeller.
-
----
-
-.middle
-## When to Node, kortversjon:
-
-* Høye ytelseskrav (sanntid)
-* Lite budsjett 
-* Tilgang på Javascript-kompetanse
-* Smalt domene
-
----
-
-.middle
-## Hva med Netty, Twisted, EventMachine, etc.?
-
-* Har du Java-kompetanse og/eller Java-infrastruktur, bruk Netty.
-* Har du Python-kompetanse og/eller Python-infrastruktur, bruk Twisted.
-* Ser du mønsteret?
-
----
-
-.center.middle
-
-## Men hva yter BEST?
-
----
-
-.center.middle
-<br />
-<img src="presentation/event_timing.png" width="90%" />
-
-Ser du trenden?
-
----
-
-.center.middle
-
-## Domenet og anvendelsen bestemmer.
-
-Build. Measure.
-
-## Kompetanse er dyrest.
-
----
-.center.middle
-
-## Spørsmål?
-
-<br /><img src="presentation/twitter-blue.png" width="40" valign="middle" /> @havardstranden<br />
-<img src="presentation/web.png" width="30" valign="middle" /> http://ox.no
     </textarea>
     <div id="slideshow"></div>
   </body>
