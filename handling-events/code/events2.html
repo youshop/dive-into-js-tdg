@@ -1,0 +1,80 @@
+<!doctype html>
+<html>
+    <head>
+        <title>Events Observable/Publisher</title>
+    </head>
+    <body>
+        <div>
+            <button id="on">Add event listener</button>
+            <button id="off">Remove event listener</button>
+            <button id="trigger">Trigger event</button>
+        </div>
+        <div>
+            <button id="on2">Add event listener touch </button>
+            <button id="off2">Remove event listener touch</button>
+            <button id="trigger2">Trigger event touch</button>
+        </div>
+        <script>
+
+            var Event = function() {
+                this.subscribers = {};
+            };
+
+            Event.prototype = {
+                on: function(type, callback) {
+                    // In most situations, you would check to see if the
+                    // callback already exists within the subscribers array,
+                    // but for the sake of keeping us on track and because
+                    // this isn't necessarily included, we'll leave it out.
+                    // Just add the callback to the subscribers list
+                    if(!this.subscribers[type]) {
+                        this.subscribers[type] = [];
+                    }
+                    this.subscribers[type].push(callback);
+                },
+                off: function(type) {
+                    delete this.subscribers[type];
+                },
+                trigger: function(type, data) {
+                    if(!this.subscribers[type]) { 
+                        return;
+                    }
+                    var i = 0,
+                    len = this.subscribers[type].length;
+
+                    // Iterate over the subscribers array and call each of
+                    // the callback functions.
+                    for (; i < len; i++) {
+                        this.subscribers[type][i](data);
+                    }        
+                }
+            };
+
+            var handler = function (data) {
+                alert(JSON.stringify(data));
+            }
+
+            var evt = new Event();
+
+            document.getElementById('on').onclick = function() {
+                evt.on('click', handler);
+            }
+            document.getElementById('off').onclick = function() {
+                evt.off('click');
+            }
+            document.getElementById('trigger').onclick = function() {
+                evt.trigger('click', { type: 'click', srcElement: 'any elements'});
+            }
+
+            document.getElementById('on2').onclick = function() {
+                evt.on('touch', handler);
+            }
+            document.getElementById('off2').onclick = function() {
+                evt.off('touch');
+            }
+            document.getElementById('trigger2').onclick = function() {
+                evt.trigger('touch', { type: 'touch', srcElement: 'any elements'});
+            }
+        </script>
+    </body>
+</html>

@@ -1,0 +1,50 @@
+<!DOCTYPE HTML>
+<html>
+    <body>
+        <link type="text/css" rel="stylesheet" href="bubble-capture.css">
+        <div class="d1">1
+            <div class="d2">2
+                <div class="d3">3
+                </div>
+            </div>
+        </div>
+
+        <p>
+            <button id="bubble">Bubble</button>
+            <button id="capture">Capture</button>
+        </p>
+        <script>
+            var divs = document.getElementsByTagName('div')
+
+            document.getElementById('bubble').onclick = function() {
+                for(var i=0; i<divs.length; i++) {
+                    divs[i].addEventListener("click", highlights, false);
+                }
+            };
+
+            document.getElementById('capture').onclick = function() {
+                for(var i=0; i<divs.length; i++) {
+                    divs[i].addEventListener("click", highlights, true);
+                }
+            }
+
+            function highlights(e) {
+                e = e || event
+
+                e.stopPropagation();
+
+                var target = e.target || e.srcElement
+
+                var curTarget = e.currentTarget;
+
+                this.style.backgroundColor='yellow'
+
+                alert("target = "+curTarget.className+", this="+this.className)
+
+                this.style.backgroundColor = ''
+                
+
+            }
+            </script>
+        </body>
+    </html>
