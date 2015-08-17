@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>SVG实例html内</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    </head>
+    <body>
+        this is a red square:<svg width="10" height="10">
+		  <rect x="0" y="0" width="10" height="10" fill="orange"/>
+		</svg>
+		this is a blue circle:<svg width="10" height="10">
+		    <circle cx="5" cy="5" r="5" fill="pink"/>
+		</svg>
+	<canvas id="my_canvas"></canvas>
+    <script src="pieChart.js"></script>
+    <script type="text/javascript">
+    window.onload=function() {
+    	document.body.appendChild(pieChart([12,23,34,45],640,400,200,200,150,['red','blue','yellow','green'],['North','South','East','West'],400,100));
+    	var canvas = document.getElementById("my_canvas");
+	    var c = canvas.getContext('2d');
+	    c.beginPath();     //开始一条新路径
+	    c.moveTo(100,100);	//从（100,100）开始定义一条新的子路径
+	    c.lineTo(200,200);	//从(100,100)到(200,200)绘制一条线段
+	    c.lineTo(100,200);	//从(200,200)到(100,200)绘制一条线段
+    }
+    </script>
+    </body>
+</html>
